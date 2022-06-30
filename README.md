@@ -1,5 +1,5 @@
 # Classical_MD-Tutorial
-The aim of this tutorial is to provide a practical guide to using CP2K for classical molecular dynamics with a focus on systems of interest to electrochemistry namely, metal/water interfaces. 
+The aim of this tutorial is to provide a practical guide to using CP2K for classical molecular dynamics with a focus on systems of interest to electrochemistry namely, metal/water interfaces. We begin with an example where the electrodes are charge neutral i.e., no applied biases.
 ---
 
 # Tutorial adapted to CP2K
@@ -100,7 +100,7 @@ NA = 6.022*10**23 # avogadro constant
 Mr = 18 # molecular mass of water
 
 # for volume, we subtract 1/2 spheres from box volume because water molecules may seep in between spheres
-V = unit[0, 0]*unit[1, 1]*(water_Zsize) - 2*((N**2)*(1/2)*(4/3)*math.pi*(R**3))
+V = unit[0, 0]*unit[1, 1]*(water_Zsize) - 2*((Nx*Ny)*(1/2)*(4/3)*math.pi*(R**3))
 
 #number of water molecules
 No_W = round((rho*V*NA)/Mr)
@@ -124,3 +124,23 @@ The python code above, auotmatically generates a packmol input script for the sy
 - The number of water molecules is defined quite simply from the following equation:
 
 $$ No_w = {\rho *V*N_A \over M_R} $$
+
+The volume, V, is calculated by calculating the volume of the box bounded by the position of atoms in the surface layers for the height, and the A & B parameters as the length and widths, and subtracting from this box volume, the volume of $(2 \times N_x \times N_y)$ half spheres since this volume is not available to water molecules.
+
+$$ V = {A \times B \times Z_w} -  {2(N_x \times N_y \times (1/2) \times (4/3) \times \pi \times R^3)} $$
+
+With this described, packmol.inp should be run in the same directory (with packmol installed) as the files electrodes.xyz and water.xyz. The latter is attached in the repository and simply consists of one water molecule which packmol will use to build a box of the desired number of water molecules, all separated by 2 Å as defined in the input using the keyword 'tolerance'. The command for running packmol is simply:
+
+```
+packmol < packmol.inp
+
+```
+Or, for mac users:
+
+```
+./packmol < packmol.inp
+
+```
+
+## Section 3: Forcefield Selection
+Another necessary part of setting up a classical MD simulation, is defining forcefields, which dictate nonbonded interactions between atoms or molecules. These forces are then computed using the classical newtonian equations of motion to determine velocities and trajectories. In our system, we need to define a water model or forcefield for the explicit water atoms and how they interact with one another. Additionally, we need to define interaction potentials for the metals and hydrogen/oxygen.
