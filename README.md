@@ -162,3 +162,162 @@ These can be parameterized in different ways including fitting against *ab intio
 ## Section 4: Running Classical MD using the NVT ensemble
 We can now begin with setting up the CP2K input. This can be found below, and is attached as a file to this repository. 
 
+```javascript
+@SET SYSNAME    Au_MD
+@SET METAL	 Au  
+@SET Cell_A
+@SET Cell_B
+@SET Cell_C
+@SET Coord_File	 Solvated_system.xyz
+@SET MD_steps	 1
+@SET Fixed_atoms MOL2
+
+&GLOBAL
+  PRINT_LEVEL LOW
+  PROJECT_NAME ${SYSNAME}
+  RUN_TYPE MD
+&END GLOBAL
+
+&FORCE_EVAL
+  METHOD FIST
+  STRESS_TENSOR ANALYTICAL
+  &MM		! Molecular Mechanics
+    &FORCEFIELD
+! The following section is for defining the water bond properites 
+      &BEND
+        ATOMS H O H
+        KIND HARMONIC
+        K [rad^-2kcalmol] 110.0
+        THETA0 [deg] 104.52
+      &END BEND
+      &BOND
+        ATOMS O H
+        KIND HARMONIC
+        K [angstrom^-2kcalmol] 900.0
+        R0 [angstrom] 0.9572
+      &END BOND
+! We need to also specify the charge of all atoms
+      &CHARGE
+        ATOM O
+        CHARGE -0.834
+      &END CHARGE
+      &CHARGE
+        ATOM H
+        CHARGE 0.417
+      &END CHARGE
+      &CHARGE
+        ATOM ${METAL}
+        CHARGE 0
+      &END CHARGE
+! All nonbonded interactions are defined, this includes intermolecular water interactions
+      &NONBONDED
+        &LENNARD-JONES
+          atoms O O
+          EPSILON [kcalmol]  0.152073
+          SIGMA   [angstrom] 3.1507
+          RCUT    [angstrom] 10		! The distance at which the interaction is terminated
+        &END LENNARD-JONES
+        &LENNARD-JONES
+          atoms O H
+          EPSILON [kcalmol] 0.0836
+          SIGMA [angstrom] 1.775
+          RCUT  [angstrom] 10
+        &END LENNARD-JONES
+        &LENNARD-JONES
+          atoms H H
+          EPSILON [kcalmol]  0.04598
+          SIGMA   [angstrom] 0.400
+          RCUT    [angstrom] 10
+        &END LENNARD-JONES
+        &LENNARD-JONES
+          atoms ${METAL} ${METAL}	! Parameters are set to zero here since we will be fixing Au
+          EPSILON [kcalmol]  0
+          SIGMA   [angstrom] 0
+          RCUT    [angstrom] 0
+        &END LENNARD-JONES
+        &LENNARD-JONES
+          atoms ${METAL} O
+          EPSILON [kjmol]  3.61
+          SIGMA   [angstrom] 2.833057924
+          RCUT    [angstrom] 10
+        &END LENNARD-JONES
+        &LENNARD-JONES
+          atoms ${METAL} H
+          EPSILON [kjmol]  0.01
+          SIGMA   [angstrom] 3.519049937
+          RCUT    [angstrom] 10
+        &END LENNARD-JONES
+      &END NONBONDED
+! The following section is related to implementation
+      &SPLINE		! Splines used in nonboned interactions and refer to a class of functions
+        #EMAX_SPLINE 3000	! Uncomment if necessary to debug
+        UNIQUE_SPLINE .TRUE.
+        EMAX_ACCURACY 0.001
+        R0_NB 0.05
+      &END SPLINE
+      IGNORE_MISSING_CRITICAL_PARAMS .TRUE.	! Since we do not define full info 
+    &END FORCEFIELD
+    &POISSON		! The solver
+      &EWALD
+        EWALD_TYPE spme	! Recommended on the refernce manual
+        ALPHA .3
+        GMAX 12		! Best to adjust to cell size
+      &END EWALD
+    &END POISSON
+  &END MM
+! The standard subsys section
+  &SUBSYS
+    &CELL
+      A  ${Cell_A} 0 0
+      B 0 ${Cell_B} 0
+      C 0 0 ${Cell_C}
+      MULTIPLE_UNIT_CELL 1 1 1
+      PERIODIC XYZ   
+      SYMMETRY ORTHORHOMBIC    
+    &END CELL
+    &TOPOLOGY
+      COORD_FILE_FORMAT xyz
+      COORD_FILE_NAME ${Coord_file}
+      &GENERATE		! The infamous 
+        #BONDLENGTH_MAX 2
+        CREATE_MOLECULES .TRUE.
+        BONDPARM_FACTOR 0.9
+      &END GENERATE
+    &END TOPOLOGY
+    &PRINT
+      &MOLECULES ON	! To check validity of GENERATE
+      &END MOLECULES
+    &END PRINT
+  &END SUBSYS
+&END FORCE_EVAL
+! The Motion section is straightforward
+&MOTION
+  &MD
+    ENSEMBLE NVT
+    &THERMOSTAT
+      TYPE  CSVR
+    &END THERMOSTAT
+    STEPS ${MD_steps}
+    TIMESTEP  0.5
+    TEMPERATURE 300
+  &END MD
+  &CONSTRAINT
+    &FIXED_ATOMS
+      COMPONENTS_TO_FIX XYZ
+      MOLNAME ${Fixed_atoms}
+    &END FIXED_ATOMS
+  &END CONSTRAINT
+  &PRINT
+    &TRAJECTORY ON
+      &EACH
+        MD 1000
+      &END EACH
+    &END TRAJECTORY
+    &VELOCITIES ON
+      &EACH
+        MD 1000
+      &END EACH
+    &END VELOCITIES
+  &END PRINT
+&END MOTION
+```
