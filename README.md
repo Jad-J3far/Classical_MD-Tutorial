@@ -326,11 +326,6 @@ We can now begin with setting up the CP2K input. This can be found below, and is
         MD 1000
       &END EACH
     &END STRESS
-    &ENERGY ON
-      &EACH
-        MD 1000
-      &END EACH
-    &END ENERGY
   &END PRINT
 &END MOTION
 ```
