@@ -168,7 +168,7 @@ We can now begin with setting up the CP2K input. This can be found below, and is
 @SET Cell_A	17.811878396732894
 @SET Cell_B	15.425539180689922
 @SET Cell_C	32.11944817569403
-@SET Coord_File	 solvated_system.xyz
+@SET Coord_file	 solvated_system.xyz
 @SET MD_steps	 1
 @SET Fixed_atoms MOL2
 
@@ -281,7 +281,7 @@ We can now begin with setting up the CP2K input. This can be found below, and is
       &GENERATE		! The infamous 
         #BONDLENGTH_MAX 2
         CREATE_MOLECULES .TRUE.
-        BONDPARM_FACTOR 0.9
+        BONDPARM_FACTOR 0.7
       &END GENERATE
     &END TOPOLOGY
     &PRINT
@@ -318,6 +318,13 @@ We can now begin with setting up the CP2K input. This can be found below, and is
         MD 1000
       &END EACH
     &END VELOCITIES
+    &RESTART_HISTORY OFF
+    &END RESTART_HISTORY
+    &STRESS ON
+      &EACH
+        MD 1000
+      &END EACH
+    &END STRESS
   &END PRINT
 &END MOTION
 ```
@@ -384,4 +391,4 @@ Notice, the number of MD_steps is set to 1. This is done to check that CP2K gene
                                               Total Number of opbends:         0
 ```
 
-This confirms that 167 water molecules were generated as expected, and the gold atoms were categorizes as seperate atoms/molecules. Notice the gold atoms are collectively named MOL2, meaning if we set MOL2 as Fixed_atoms (as is already done) we will indeed by fixing all Au atoms during the MD run. You may now increase the number of MD_steps to as large a value as required (10000000) and run the simulation. It is possible that issues may arise midway after several hundred picosends of simulation time (or nanoseconds) however this not common.
+This confirms that 167 water molecules were generated as expected, and the gold atoms were categorizes as seperate atoms/molecules. Notice the gold atoms are collectively named MOL2, meaning if we set MOL2 as Fixed_atoms (as is already done) we will indeed by fixing all Au atoms during the MD run. If you do see any clustering of metal atoms in the input i.e., several metal atoms bonded together, you may vary *BONDPARM_FACTOR*. Otherwise, you may now increase the number of MD_steps to as large a value as required (10000000) and run the simulation. It is possible that issues may arise midway after several hundred picosends of simulation time (or nanoseconds) however this not common. If you are going for very long simulations, it is wise to print MD information, such as the trajectory, every 10,000 steps. 
