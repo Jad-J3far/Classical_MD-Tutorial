@@ -9,6 +9,7 @@ The tutorial is structured into 4 different sections:
 - **Section 2:** Using packmol to add water 
 - **Section 3:** Forcefield selection
 - **Section 4:** Running classical MD using the NVT ensemble
+- **Section 5:** Extras
 
 <br/><br/>
 
@@ -397,3 +398,6 @@ Notice, the number of MD_steps is set to 1. This is done to check that CP2K gene
 ```
 
 This confirms that 167 water molecules were generated as expected, and the gold atoms were categorizes as seperate atoms/molecules. Notice the gold atoms are collectively named MOL2, meaning if we set MOL2 as Fixed_atoms (as is already done) we will indeed by fixing all Au atoms during the MD run. If you do see any clustering of metal atoms in the input i.e., several metal atoms bonded together, you may vary *BONDPARM_FACTOR*. Otherwise, you may now increase the number of MD_steps to as large a value as required (10000000) and run the simulation. It is possible that issues may arise midway after several hundred picosends of simulation time (or nanoseconds) however this not common. If you are going for very long simulations, it is wise to print MD information, such as the trajectory, every 10,000 steps. 
+
+## Section 5: Extras
+
