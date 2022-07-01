@@ -396,3 +396,17 @@ This confirms that 167 water molecules were generated as expected, and the gold 
 
 ## Section 5: Extras
 
+### 5.1 Using EAM 
+In the previous simulation, we fixed the metal atoms completely, allowing water to reconfigure. What if we want the metal atoms to be in dynamic motion as well? For this, we need to specify some sort of classical potential that mimics metallic bond attractions. A standard approach is to use the embedde atom method (EAM) which are obtained for metals by fitting functions to QM calculations. This is one of the more reliable ways of treating metals classically. A metal potential file, based on EAM can be supplied, where this file can be obtained from external packages. This can then be implemented in the CP2K input by replacing the metal-metal LJ section above, with the following (using gold as an example):
+
+```javascript
+  &EAM
+    atoms Au Au
+    PARM_FILE_NAME Au.pot
+  &END EAM
+  ```
+The actual EAM file, Au.pot, is attached to this repository and can be used to run some test simulations with gold. The EAM potential file was obtained from the following QM/MM CP2K tutorial https://www.cp2k.org/howto:ic-qmmm
+
+### 5.2 Including Ions
+Some of the MD work you will do, particularly when biases are applied, will involve ions. This can be for example to implement the ion unbalance method. How do we repeat the above (connectivity generation) provided there are ions present in the coordinate file? Fortunately, CP2K allows for further tweaking in the GENERATE subsection where you can isolate particular atoms. This is commonly used for ions. On the forcefield side, the ion charge should be specified and possibly the forcefields that dictate its interaction with other atoms/molecules.
+  
