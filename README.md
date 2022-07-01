@@ -163,12 +163,12 @@ These can be parameterized in different ways including fitting against *ab intio
 We can now begin with setting up the CP2K input. This can be found below, and is attached as a file to this repository. 
 
 ```javascript
-@SET SYSNAME    Au_MD
+@SET SYSNAME	 Au_MD
 @SET METAL	 Au  
-@SET Cell_A
-@SET Cell_B
-@SET Cell_C
-@SET Coord_File	 Solvated_system.xyz
+@SET Cell_A	17.811878396732894
+@SET Cell_B	15.425539180689922
+@SET Cell_C	32.11944817569403
+@SET Coord_File	 solvated_system.xyz
 @SET MD_steps	 1
 @SET Fixed_atoms MOL2
 
