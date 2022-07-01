@@ -1,0 +1,10 @@
+output solvated_system.xyz 
+filetype xyz 
+structure electrodes.xyz 
+   fixed 0 0 0 0 0 0 
+end structure 
+structure water.xyz 
+   number 167 
+   tolerance 2.0 
+   inside box 0 0 8.532102470005352 15.811878396732894 13.425539180689922 21.163456070549874 
+end structure
