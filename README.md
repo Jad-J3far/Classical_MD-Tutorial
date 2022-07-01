@@ -321,3 +321,5 @@ We can now begin with setting up the CP2K input. This can be found below, and is
   &END PRINT
 &END MOTION
 ```
+Notice, the number of MD_steps is set to 1. This is done to check that CP2K generates connectivity as we would like. A sample of the output that tells whether this has been done correctly is shown below:
+
