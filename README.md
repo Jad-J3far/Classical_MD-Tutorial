@@ -297,6 +297,9 @@ We can now begin with setting up the CP2K input. This can be found below, and is
     ENSEMBLE NVT
     &THERMOSTAT
       TYPE  CSVR
+      &CSVR 
+        TIMECON 1000
+      &END CSVR
     &END THERMOSTAT
     STEPS ${MD_steps}
     TIMESTEP  0.5
