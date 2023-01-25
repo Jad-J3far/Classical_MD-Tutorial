@@ -124,7 +124,7 @@ The python code above, auotmatically generates a packmol input script for the sy
 - The box is defined by specifying the minimum and maximum coordinates. As our box is confined between two electrodes, the zmin cannot be zero, but rather it should have a value greater than the z-position of the surface layer of the bottom electrode. In the above code, zmin is defined as 2.2 Å above the surface spheres. It is done this way to avoid issues with connectivity generation between the metal and water. Zmax is likewise defined as 2.2 Å below the surface spheres of the upper electrode. The position of the upper electrode itself is set by the size of the water box we want as seen earlier.
 - The number of water molecules is defined quite simply by the following equation:
 
-$$ No_w = {\rho *V*N_A \over M_R} $$
+$$ No_w = {\rho * V * N_A \over M_R} $$
 
 The volume, V, is calculated by calculating the volume of the box bounded by the position of atoms in the surface layers for the height, and the A & B parameters as the length and widths, and subtracting from this box volume, the volume of $(2 \times N_x \times N_y)$ half spheres since this volume is not available to water molecules.
 
